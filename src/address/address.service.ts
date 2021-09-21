@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import KeyPath from "../lib/hdkey/key.path";
 import HDKey from "../lib/hdkey/hd.key";
-import { getP2PKH, getP2SH_P2WPKH, getP2WPKH } from "../lib/bitcoin.address";
-import p2msAddress from "../lib/p2ms/p2ms.address";
+import publicKeyAddress from "../lib/public.key.address";
+import p2msAddress from "../lib/p2ms.address";
 import { logger } from "../utils/logger";
 import { AddressType } from "./address.enum";
 
@@ -22,20 +22,19 @@ export class AddressService {
 			const path: KeyPath = new KeyPath(_path);
 			const hdkeyNode = HDKey.fromSeed(seed);
 			const hdkeyChild = hdkeyNode.derivePath(path);
-			logger.debug(`privateKey: ${hdkeyChild.privateKey.toString("hex")}`);
+			const pubKeyAddress: publicKeyAddress = new publicKeyAddress(
+				hdkeyChild.publicKey.toString("hex"),
+			);
 
 			switch (addressType) {
 				case AddressType.P2WPKH:
-					address = getP2WPKH(hdkeyChild.publicKey);
-					logger.debug(`P2WPKH: ${address}`);
+					address = pubKeyAddress.getP2WPKH();
 					break;
 				case AddressType.P2SHP2WPKH:
-					address = getP2SH_P2WPKH(hdkeyChild.publicKey);
-					logger.debug(`P2SHP2WPKH: ${address}`);
+					address = pubKeyAddress.getP2SH_P2WPKH();
 					break;
 				default:
-					address = getP2PKH(hdkeyChild.publicKey);
-					logger.debug(`P2PKH: ${address}`);
+					address = pubKeyAddress.getP2PKH();
 			}
 		} catch (err) {
 			logger.error(`get error whiling address generation : ${err}`);
@@ -65,8 +64,6 @@ export class AddressService {
 			} else {
 				address = p2ms.P2WSHAddress;
 			}
-			logger.debug(`P2SH-P2MS address: ${p2ms.P2SHAddress}`);
-			logger.debug(`P2WSH-P2MS address: ${p2ms.P2WSHAddress}`);
 		} catch (err) {
 			logger.error(`get error whiling generate p2ms address : ${err}`);
 			throw err;

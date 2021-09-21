@@ -47,9 +47,11 @@ describe("AddressService", () => {
 		});
 
 		it("should return an error", async () => {
-			addressInst.genAddress = jest.fn(()=> {throw new Error("gen address error")});
-			const t =() => {
-				addressInst.genAddress('','','');
+			addressInst.genAddress = jest.fn(() => {
+				throw new Error("gen address error");
+			});
+			const t = () => {
+				addressInst.genAddress("", "", "");
 			};
 			expect(t).toThrow();
 		});

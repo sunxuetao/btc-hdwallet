@@ -1,3 +1,5 @@
+export const hardened_offset = 0x80000000;
+
 export default class KeyPath {
 	private _indexes: number[] = [];
 
@@ -25,11 +27,11 @@ export default class KeyPath {
 		}
 
 		// when parsing, number equals or greater than 0x80000000 (= 2147483648) should not be allowed.
-		if (intIndex >= 0x80000000) {
+		if (intIndex >= hardened_offset) {
 			throw new Error("KeyPath uncorrectly formatted");
 		}
 		if (hardened) {
-			intIndex = intIndex + 0x80000000;
+			intIndex = intIndex + hardened_offset;
 		}
 		return intIndex;
 	};

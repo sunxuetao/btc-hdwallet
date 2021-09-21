@@ -1,6 +1,6 @@
-import * as crypto from "../crypto";
+import * as crypto from "../crypto/crypto";
 import ecc = require("tiny-secp256k1");
-import KeyPath from "./key.path";
+import KeyPath, { hardened_offset } from "./key.path";
 
 export default class HDKey {
 	private _privateKey: Buffer | undefined;
@@ -42,7 +42,7 @@ export default class HDKey {
 	}
 
 	private derive(index: number): HDKey {
-		const isHardened = index >= 0x80000000;
+		const isHardened = index >= hardened_offset;
 		const data = Buffer.allocUnsafe(37);
 
 		// Hardened child

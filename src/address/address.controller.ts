@@ -28,6 +28,7 @@ export class AddressController {
 		@Query("path") path,
 		@Query("addressType") addressType,
 	): Promise<AddressGenerateResponse> {
+		logger.info(`seed: ${seed}, path: ${path}, addressType: ${addressType}`);
 		const data = await this.addressService.genAddress(seed, path, addressType);
 		logger.info(`address: ${data}`);
 		// no error then return 200, otherwise the exception will be catched by AddressExceptionsFilter
@@ -44,12 +45,13 @@ export class AddressController {
 	@Post("/p2sh")
 	@UseFilters(AddressExceptionsFilter)
 	public async getP2msAddress(@Body() p2msDto: P2msDto): Promise<AddressGenerateResponse> {
-		logger.info(`p2ms dto: ${p2msDto}`);
+		logger.info(`p2ms dto: ${JSON.stringify(p2msDto)}`);
 		const data = await this.addressService.getP2msAddress(
 			p2msDto.m,
 			p2msDto.publicKeys,
 			p2msDto.addressType,
 		);
+		logger.info(`address: ${data}`);
 		return { code: 200, message: "get an address successfully.", data };
 	}
 }

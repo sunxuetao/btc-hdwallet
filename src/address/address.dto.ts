@@ -24,8 +24,8 @@ export class P2msDto {
 	@ApiProperty({
 		name: "addressType",
 		required: true,
-		enum: ["P2PKH", "P2WPKH", "P2SHP2WPKH"],
-		example: "P2PKH",
+		enum: ["P2SH", "P2WSH"],
+		example: "P2SH",
 		description: "address type: P2SH, P2WSH",
 	})
 	addressType: string;
@@ -54,7 +54,7 @@ export class AddressDto {
 		required: true,
 		enum: ["P2PKH", "P2WPKH", "P2SHP2WPKH"],
 		example: "P2PKH",
-		description: "transaction scripts",
+		description: "address type",
 	})
 	addressType: string;
 }
