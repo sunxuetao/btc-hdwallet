@@ -6,7 +6,8 @@ import { AddressType } from "./address.enum";
 describe("AddressService", () => {
 	let service: AddressService;
 	const newService: AddressService = new AddressService();
-
+	const mockedAddress: AddressService = mock(AddressService);
+	const addressInst: AddressService = instance(mockedAddress);
 	beforeEach(async () => {
 		const module: TestingModule = await Test.createTestingModule({
 			providers: [AddressService],
@@ -25,9 +26,7 @@ describe("AddressService", () => {
 		let addressType: AddressType;
 
 		it("should return an address", async () => {
-			const mockedAddress: AddressService = mock(AddressService);
-			const addressServ: AddressService = instance(mockedAddress);
-			addressServ.genAddress(seed, path, addressType);
+			addressInst.genAddress(seed, path, addressType);
 			verify(mockedAddress.genAddress(seed, path, addressType)).called();
 		});
 
@@ -47,10 +46,10 @@ describe("AddressService", () => {
 			expect(await newService.genAddress(seed, path, "P2SHP2WPKH")).toBe(p2shp2wpkhAddress);
 		});
 
-		it("should return an error with incorrect path input", async () => {
-			const incorrectPath = "www/999'/1'/0'/1/5";
-			const t = async() => {
-				await newService.genAddress(seed, incorrectPath, "P2SHP2WPKH")
+		it("should return an error", async () => {
+			addressInst.genAddress = jest.fn(()=> {throw new Error("gen address error")});
+			const t =() => {
+				addressInst.genAddress('','','');
 			};
 			expect(t).toThrow();
 		});
@@ -66,7 +65,6 @@ describe("AddressService", () => {
 		it("should return an address", async () => {
 			const mockedAddress: AddressService = mock(AddressService);
 			const addressServ: AddressService = instance(mockedAddress);
-
 			addressServ.getP2msAddress(sigCount, pubkeys, "P2SH");
 			verify(mockedAddress.getP2msAddress(sigCount, pubkeys, "P2SH")).called();
 		});

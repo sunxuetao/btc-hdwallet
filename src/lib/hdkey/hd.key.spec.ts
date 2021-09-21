@@ -12,7 +12,7 @@ describe("HDKey", () => {
 			const result = HDKey.fromSeed(correctSeed);
 			expect(result).not.toBeUndefined();
 		});
-		it("should throw error with incorrect path", async () => {
+		it("should throw error with incorrect seed", async () => {
 			const t = () => {
 				HDKey.fromSeed(incorrectSeed);
 			};
@@ -28,7 +28,7 @@ describe("HDKey", () => {
 			expect(result).not.toBeUndefined();
 			expect(result.privateKey.toString("hex")).toBe(expectPrivateKey);
 		});
-		it("should throw error with correct path", async () => {
+		it("should throw error with incorrect path", async () => {
 			const t = () => {
 				const keyPath = null;
 				const hdKey = HDKey.fromSeed(correctSeed);
